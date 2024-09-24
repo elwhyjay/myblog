@@ -1,0 +1,45 @@
+[[entries]]
+title = "info"
+
+  [[entries.entries]]
+  title = "Developer"
+
+  [[entries.entries]]
+  title = "github repo"
+  url = "https://github.com/elwhyjay"
+
+  [[entries.entries]]
+  title = "LinkedIn"
+  url = "https://www.linkedin.com/in/yongjun-lee-47b0201bb/"
+
+[[entries]]
+title = "all posts"
+url = "post"
+
+[[entries]]
+title = "categories"
+
+  [[entries.entries]]
+  title = "all categories"
+  url = "tags"
+
+  [[entries.entries]]
+  title = "algorithm"
+  url = "tags/algorithm"
+
+  [[entries.entries]]
+  title = "optimization"
+  url = "tags/optimization"
+
+[[entries]]
+title = "recent posts"
+
+  [entries.post_list]
+  limit = 5
+  show_more = true
+  show_more_text = "See archive..."
+  show_more_url = "/post"
+
+[[entries]]
+title = "rss"
+url = "index.xml"
