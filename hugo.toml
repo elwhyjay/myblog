@@ -1,4 +1,4 @@
 baseURL = 'https://elwhyjay.github.io'
 languageCode = 'en-us'
-title = 'Yongjun's blog'
+title = "Yongjun's blog"
 theme = 'nostyleplease'
