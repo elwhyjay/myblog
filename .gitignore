@@ -1,0 +1,6 @@
+*.sh
+DS_Store
+node_modules
+
+/public/
+/resources/_gen/
