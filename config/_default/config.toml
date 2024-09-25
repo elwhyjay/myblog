@@ -6,3 +6,5 @@ theme = 'nostyleplease'
     categories = 'categories'
     tag = 'tags'
     remind = 'reminds'
+[Params]
+    favicon = "img/favicon.ico"
