@@ -30,7 +30,7 @@ reminds = ['회고']
 
 $$\mathcal{L}_{cor} = 1 - \rho(y, \hat{y})$$ 
 
-$$ \rho(y, \hat{y}) = \frac{\sum_{i=1}^{n} (y_i - \bar{y})(\hat{y}i - \bar{\hat{y}})}{\sqrt{\sum{i=1}^{n} (y_i - \bar{y})^2} \sqrt{\sum_{i=1}^{n} (\hat{y}_i - \bar{\hat{y}})^2}} $$ 
+$$ \rho(y, \hat{y}) = \frac{\sum_{i=1}^{n} (y_i - \bar{y})(\hat{y}_i - \bar{\hat{y}})}{\sqrt{\sum{i=1}^{n} (y_i - \bar{y})^2} \sqrt{\sum_{i=1}^{n} (\hat{y}_i - \bar{\hat{y}})^2}} $$ 
 
 즉 상관계수 손실함수는 타겟데이터와 예측데이터의 피어슨 상관계수를 구하고 그 값을 1에서 뺀것으로 정의했다. (손실값을 작게 학습해야함으로)
 그리고 이것만으로는 선형관계 파악에만 학습이 치중될거같다는 가정을하고 $ L_1 $ 손실함수와 가중합을 더해 최종 손실함수를 정의 했다. 
