@@ -24,11 +24,53 @@ z_{1:d}$ 의 임베딩들에 대해서 각각 linear classifier를 태우고 독
 ![figure2](/img/Maytyoshka_img2.png)*Figure 2*
 
 
+### Sentence Transformer 사용법
+
+sentence library에 구현이 되어있다. 사용법을 document에서 가져와봤다.
+학습의 경우 간단히 loss를 설정해주면된다. 
+
+```python
+from sentence_transformers import SentenceTransformer
+from sentence_transformers.losses import CoSENTLoss, MatryoshkaLoss
+
+model = SentenceTransformer("microsoft/mpnet-base")
+
+base_loss = CoSENTLoss(model=model)
+loss = MatryoshkaLoss(model=model, loss=base_loss,
+                    matryoshka_dims=[768, 512, 256, 128, 64])
+loss = Matryoshka2dLoss(model=model, loss=base_loss,
+                    matryoshka_dims=[768, 512, 256, 128, 64])
+
+``` 
+
+inference는 다음과 같다. 
+```python
+from sentence_transformers import SentenceTransformer
+import torch.nn.functional as F
+
+matryoshka_dim = 64
+model = SentenceTransformer(
+    "nomic-ai/nomic-embed-text-v1.5",
+    trust_remote_code=True,
+    truncate_dim=matryoshka_dim,
+)
+
+embeddings = model.encode(
+    [
+        "search_query: What is TSNE?",
+        "search_document: t-distributed stochastic neighbor embedding (t-SNE) is a statistical method for visualizing high-dimensional data by giving each datapoint a location in a two or three-dimensional map.",
+        "search_document: Amelia Mary Earhart was an American aviation pioneer and writer.",
+    ]
+)
+assert embeddings.shape[-1] == matryoshka_dim
+
+similarities = model.similarity(embeddings[0], embeddings[1:])
+# => tensor([[0.7839, 0.4933]])
+```
+작은 사이즈의 임베딩 크기를 설정하여도 search_query 에대해서 무관한 문서보다 유관한 문서의 유사성이 높게 나타났다. 
 
 
-
-
-GPT-4 turobo에도 적용이 되어있는듯 하다.
+GPT-4 turobo에도 embedding 방법을 활용하는듯 하다.[^](https://openai.com/index/new-embedding-models-and-api-updates/) 
 
 --- 
 # Reference
