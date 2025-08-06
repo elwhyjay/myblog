@@ -3,7 +3,7 @@ title = 'Matryoshka Representation Learning Review'
 date = 2024-09-27T00:00:29+09:00
 draft = true
 mathjax = true
-tags = ['NLP','Machine-Learning','paper_review']
+tags = ['NLP','Machine-Learning','paper_review','pinned']
 +++
 
 blog도 개설한겸 논문한편을 리뷰해보고자 한다. 정말 오랜만에 작성하는 리뷰이다. 이 논문의 제목은

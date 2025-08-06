@@ -2,6 +2,7 @@ baseURL = 'https://elwhyjay.github.io'
 languageCode = 'ko-kr'
 title = "Yongjun's blog"
 theme = 'nostyleplease'
+googleAnalytics = "G-YXXYQPDYLX"
 [taxonomies]
     categories = 'categories'
     tag = 'tags'
