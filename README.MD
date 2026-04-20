@@ -62,6 +62,13 @@ git pull
 git submodule update --init --recursive
 ```
 
+> **테마 수정 후 push 하려면** (새 기기 최초 1회만):
+> `.gitmodules`의 테마 URL은 HTTPS지만 GitHub가 HTTPS push에 토큰을 요구함. 매번 remote를 SSH로 고치는 대신 글로벌 설정 한 줄로 해결:
+> ```bash
+> git config --global url."git@github.com:".insteadOf "https://github.com/"
+> ```
+> 이후 SSH 키가 등록된 상태라면 HTTPS URL로 clone/pull 하면서도 push는 자동으로 SSH로 나감.
+
 ### 로컬 서버 실행
 
 ```bash
