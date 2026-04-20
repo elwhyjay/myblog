@@ -1,7 +1,7 @@
 +++
 title = 'cuda basic operation'
 date = 2025-03-05T15:22:43+09:00
-draft = true
+draft = false
 tags = ['CUDA']
 +++
 

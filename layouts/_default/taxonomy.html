@@ -1,0 +1,28 @@
+{{ define "main" }}
+{{ partial "back_link.html" .}}
+
+<h1>{{ .Title }}</h1>
+
+{{ .Content }}
+
+{{- $pages := .Pages -}}
+{{- if eq .Data.Singular "tag" -}}
+    {{- $filtered := slice -}}
+    {{- range $pages -}}
+        {{- if ne (lower .Title) "pinned" -}}
+            {{- $filtered = $filtered | append . -}}
+        {{- end -}}
+    {{- end -}}
+    {{- $pages = $filtered -}}
+{{- end -}}
+
+{{- if gt (len $pages) 0 }}
+<ul>
+    {{- range $pages }}
+    <li>
+        <a href="{{ .Permalink | relURL }}">{{ .Title }}</a>
+    </li>
+    {{- end }}
+</ul>
+{{- end }}
+{{ end }}

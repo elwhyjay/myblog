@@ -1,9 +1,9 @@
 +++
 title = 'STS Project 회고'
 date = 2024-09-25T01:15:36+09:00
-draft = true
+draft = false
 mathjax = true
-tags = ['NLP','Machine-Learning','pinned']
+tags = ['NLP','Machine-Learning']
 reminds = ['회고']
 +++
 

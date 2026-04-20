@@ -1,0 +1,148 @@
+{{ define "main" }}
+
+<header style="display: flex; flex-direction: column; align-items: center; justify-content: space-between; margin-bottom: 20px;">
+    <div style="width: 100%; height: 100%; background-color: white; flex-shrink: 0;">
+        <img src="{{ "img/background.gif" | relURL }}" alt="Profile" style="width: 100%; height: 100%; object-fit: cover;">
+    </div>
+    <br>
+    <div>
+        <h1><span id="typed-title"></span><span id="cursor">|</span></h1>
+
+        {{- if $.Site.Params.theme_config.show_description -}}
+            <p>{{ $.Site.Params.description }}</p>
+        {{- end -}}
+    </div>
+
+</header>
+
+<div id="search-wrapper">
+    <input id="search-input" type="text" placeholder="Search posts..." autocomplete="off">
+    <ul id="search-results"></ul>
+</div>
+
+{{ .Content }}
+{{ partial "menu_item.html" (dict "context" . "collection" $.Site.Data.menu.entries) }}
+
+<style>
+    @media (max-width: 600px) {
+        header {
+            flex-direction: column;
+            align-items: flex-start;
+        }
+        header > div:last-child {
+            margin-top: 10px;
+        }
+    }
+    #cursor {
+        animation: blink 0.7s step-end infinite;
+    }
+    @keyframes blink {
+        50% { opacity: 0; }
+    }
+    #search-wrapper {
+        margin-bottom: 1.5em;
+    }
+    #search-input {
+        width: 100%;
+        padding: 6px 8px;
+        font-family: inherit;
+        font-size: inherit;
+        border: 1px solid;
+        border-radius: 0;
+        background: transparent;
+        color: inherit;
+        box-sizing: border-box;
+        outline: none;
+    }
+    #search-results {
+        list-style: none;
+        padding: 0;
+        margin: 0.5em 0 0 0;
+    }
+    #search-results li {
+        padding: 4px 0;
+    }
+    #search-results .search-date {
+        opacity: 0.6;
+        margin-right: 0.5em;
+    }
+    #search-results .search-tag {
+        font-size: 0.85em;
+        opacity: 0.5;
+    }
+</style>
+
+<script>
+(function() {
+    var text = {{ $.Site.Title | jsonify }};
+    var el = document.getElementById('typed-title');
+    var cursor = document.getElementById('cursor');
+    var i = 0;
+
+    function erase() {
+        if (el.textContent.length > 0) {
+            el.textContent = el.textContent.slice(0, -1);
+            setTimeout(erase, 50);
+        } else {
+            setTimeout(type, 500);
+        }
+    }
+
+    function type() {
+        if (i < text.length) {
+            el.textContent += text.charAt(i);
+            i++;
+            setTimeout(type, 100);
+        } else {
+            i = 0;
+            setTimeout(erase, 3000);
+        }
+    }
+
+    type();
+})();
+</script>
+
+<script src="https://cdn.jsdelivr.net/npm/fuse.js@7.0.0/dist/fuse.min.js"></script>
+<script>
+(function() {
+    var input = document.getElementById('search-input');
+    var resultsEl = document.getElementById('search-results');
+    var fuse = null;
+
+    fetch('{{ "index.json" | relURL }}')
+        .then(function(r) { return r.json(); })
+        .then(function(data) {
+            fuse = new Fuse(data, {
+                keys: [
+                    { name: 'title', weight: 0.5 },
+                    { name: 'tags', weight: 0.2 },
+                    { name: 'content', weight: 0.3 }
+                ],
+                threshold: 0.4,
+                includeScore: true
+            });
+        });
+
+    input.addEventListener('input', function() {
+        var query = this.value.trim();
+        resultsEl.innerHTML = '';
+
+        if (!query || !fuse) return;
+
+        var results = fuse.search(query).slice(0, 10);
+        results.forEach(function(r) {
+            var item = r.item;
+            var li = document.createElement('li');
+            var displayTags = item.tags.filter(function(t) { return t.toLowerCase() !== 'pinned'; });
+            var tags = displayTags.length ? ' <span class="search-tag">[' + displayTags.join(', ') + ']</span>' : '';
+            li.innerHTML = '<span class="search-date">' + item.date + '</span>'
+                + '<a href="' + item.permalink + '">' + item.title + '</a>'
+                + tags;
+            resultsEl.appendChild(li);
+        });
+    });
+})();
+</script>
+
+{{ end }}

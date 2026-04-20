@@ -1,7 +1,7 @@
 +++
 title = 'Gpu_architec'
 date = 2025-08-06T12:22:45+09:00
-draft = true
+draft = false
 tags = ['GPU','CUDA']
 +++
 

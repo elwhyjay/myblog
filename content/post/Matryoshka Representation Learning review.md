@@ -1,7 +1,7 @@
 +++
 title = 'Matryoshka Representation Learning Review'
 date = 2024-09-27T00:00:29+09:00
-draft = true
+draft = false
 mathjax = true
 tags = ['NLP','Machine-Learning','paper_review','pinned']
 +++

@@ -1,7 +1,7 @@
 +++
 title = 'Loss Function in information geometry'
 date = 2025-06-11T13:41:05+09:00
-draft = true
+draft = false
 tags = ['NLP','Machine-Learning','Information Geometry']
 +++
 

@@ -1,12 +1,20 @@
 baseURL = 'https://elwhyjay.github.io'
 languageCode = 'ko-kr'
-title = "Yongjun's blog"
+title = "YongJun's blog"
 theme = 'nostyleplease'
 googleAnalytics = "G-YXXYQPDYLX"
 [taxonomies]
     categories = 'categories'
     tag = 'tags'
     remind = 'reminds'
+[outputs]
+  home = ["HTML", "RSS", "JSON"]
+
+[markup]
+  [markup.goldmark]
+    [markup.goldmark.renderer]
+      unsafe = true
+
 [Params]
     favicon = "img/favicon.ico"
     disable_comments = false
