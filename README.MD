@@ -69,6 +69,35 @@ git submodule update --init --recursive
 > ```
 > 이후 SSH 키가 등록된 상태라면 HTTPS URL로 clone/pull 하면서도 push는 자동으로 SSH로 나감.
 
+#### public/ 배포 repo 연결 (새 기기 최초 1회)
+
+`public/`은 소스 repo의 `.gitignore` 대상이므로 클론 후에도 비어 있음. 배포 대상 repo(`elwhyjay.github.io`)를 별도로 연결해줘야 배포가 가능함.
+
+```bash
+# myblog 루트에서
+mkdir -p public
+cd public
+git init
+git remote add origin git@github.com:elwhyjay/elwhyjay.github.io.git
+git fetch origin
+
+# hugo를 한 번이라도 돌린 적이 있다면 public/ 안에 untracked 빌드 산출물이 있을 수 있음.
+# reset이 conflict를 일으키므로 깨끗이 비우고 받아오기:
+rm -rf ./* .DS_Store 2>/dev/null
+git reset --hard origin/main
+
+# 최초 푸시는 upstream tracking 설정 필요 (-u)
+# 실제 배포 순서는 아래 "배포 (GitHub Pages)" 섹션 참고
+# 첫 git push 시 다음처럼:
+#   git push -u origin main
+```
+
+확인:
+```bash
+git branch -vv
+# * main abc1234 [origin/main] ...  ← [origin/main]이 붙어있으면 OK
+```
+
 ### 로컬 서버 실행
 
 ```bash
@@ -289,7 +318,7 @@ static/img/example.png    → https://elwhyjay.github.io/img/example.png
 
 ## 배포 (GitHub Pages)
 
-`public/`은 별도 git repo (`elwhyjay.github.io`)로 관리됨.
+`public/`은 별도 git repo (`elwhyjay.github.io`)로 관리됨. **새 기기에서 최초 연결은 "[public/ 배포 repo 연결](#public-배포-repo-연결-새-기기-최초-1회)" 섹션 참고.**
 
 ```bash
 # 1. 로컬 미리보기 (public/ 건드리지 않음)
@@ -306,6 +335,8 @@ git add -A && git commit -m "update" && git push
 ```
 
 > `--renderToMemory` 없이 `hugo server -D`를 쓰면 public/에 draft 포함 빌드가 써지므로 주의.
+>
+> 새 기기에서 처음 푸시할 때는 upstream tracking이 없어서 `fatal: The current branch main has no upstream branch` 에러가 남. 그때는 `git push -u origin main`으로 한 번만 설정해주면 이후로는 `git push`만 써도 됨.
 
 ---
 
