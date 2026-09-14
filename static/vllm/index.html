@@ -1,0 +1,248 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>vLLM 엔진 다이어그램</title>
+<style>
+  :root {
+    color-scheme: light dark;
+    --bg: #f7f8fa;
+    --panel: #ffffff;
+    --border: #e2e5ea;
+    --text: #16181d;
+    --muted: #5c626e;
+    --accent: #0e9f6e;
+    --accent-2: #d97706;
+    --code-bg: #eef0f4;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #0b0e14;
+      --panel: #11151d;
+      --border: #232935;
+      --text: #e6e9ef;
+      --muted: #98a0b0;
+      --accent: #34d399;
+      --accent-2: #fbbf24;
+      --code-bg: #1a1f2a;
+    }
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    padding: 48px 24px 64px;
+    background: var(--bg);
+    color: var(--text);
+    font: 15px/1.65 ui-sans-serif, -apple-system, "Segoe UI", "Apple SD Gothic Neo",
+          "Noto Sans KR", "Malgun Gothic", sans-serif;
+  }
+  main { max-width: 940px; margin: 0 auto; }
+  h1 {
+    margin: 0 0 6px;
+    font-size: 24px;
+    letter-spacing: -0.01em;
+    font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  }
+  h1::before { content: "● "; color: var(--accent); }
+  .lede { margin: 0 0 32px; color: var(--muted); font-size: 14px; }
+  .grid { display: grid; gap: 16px; grid-template-columns: repeat(auto-fit, minmax(360px, 1fr)); }
+  .card {
+    display: block;
+    padding: 22px 24px;
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    text-decoration: none;
+    color: inherit;
+    transition: border-color .15s ease, transform .15s ease;
+  }
+  .card:hover, .card:focus-visible { border-color: var(--accent); transform: translateY(-2px); }
+  .card:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+  .card h2 {
+    margin: 0 0 8px;
+    font-size: 17px;
+    font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  }
+  .card p { margin: 0 0 14px; color: var(--muted); font-size: 14px; }
+  .card ul { margin: 0; padding-left: 18px; color: var(--muted); font-size: 13px; }
+  .card li { margin-bottom: 3px; }
+  .tag {
+    display: inline-block;
+    margin-bottom: 10px;
+    padding: 2px 9px;
+    border-radius: 999px;
+    background: var(--code-bg);
+    color: var(--muted);
+    font: 11px/1.7 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  }
+  .tag.detail { color: var(--accent-2); }
+  .section { margin-top: 40px; }
+  .section h2 {
+    margin: 0 0 4px;
+    font-size: 17px;
+    font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  }
+  .section > p { margin: 0 0 16px; color: var(--muted); font-size: 13px; }
+  .panel {
+    padding: 20px 22px;
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+  }
+  .panel h3 { margin: 0 0 12px; font-size: 14px; }
+  .panel ul { margin: 0; padding-left: 18px; color: var(--muted); font-size: 13px; }
+  .panel li { margin-bottom: 4px; }
+  .badge {
+    display: inline-block;
+    margin-left: 6px;
+    padding: 1px 8px;
+    border-radius: 999px;
+    background: var(--code-bg);
+    color: var(--accent);
+    font: 11px/1.7 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  }
+  .badge.err { color: var(--accent-2); }
+  footer {
+    margin-top: 36px;
+    padding-top: 18px;
+    border-top: 1px solid var(--border);
+    color: var(--muted);
+    font-size: 13px;
+  }
+  code {
+    padding: 1px 5px;
+    border-radius: 4px;
+    background: var(--code-bg);
+    font: 12px/1.5 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  }
+</style>
+</head>
+<body>
+<main>
+  <h1>vLLM 엔진 다이어그램</h1>
+  <p class="lede">vLLM V1 엔진의 실행 경로를 개요 한 장과 상세 여섯 장으로 나누어 정리했습니다. 각 페이지는 단독 HTML이며 다크/라이트 테마, 검색·포커스, PNG·SVG 내보내기를 지원합니다.</p>
+
+  <div class="grid">
+    <a class="card" href="engine-flow.html">
+      <span class="tag">개요</span>
+      <h2>V1 엔진 실행 흐름</h2>
+      <p>요청이 들어와 토큰이 스트리밍되어 나가기까지, 세 프로세스 경계를 넘나드는 왕복 경로.</p>
+      <ul>
+        <li>프론트엔드(P0) · 엔진 코어(P1) · 워커 프로세스</li>
+        <li>ZMQ 입출력 소켓과 rpc_broadcast_mq 구간</li>
+        <li>schedule → execute_model → update_from_output 순환</li>
+      </ul>
+    </a>
+
+    <a class="card" href="engine-startup.html">
+      <span class="tag detail">상세</span>
+      <h2>엔진 기동 시퀀스</h2>
+      <p>서빙이 시작되기 전까지. 워커 기동부터 KV 캐시 블록 수가 정해지기까지의 호출 순서.</p>
+      <ul>
+        <li>WorkerProc 기동 → init_device() → load_model()</li>
+        <li>profile_run()으로 KV에 쓸 여유 메모리 측정</li>
+        <li>블록 텐서 할당 · 컴파일 · 그래프 캡처</li>
+      </ul>
+    </a>
+
+    <a class="card" href="scheduler-step.html">
+      <span class="tag detail">상세</span>
+      <h2>스케줄러 한 스텝</h2>
+      <p>개요의 <code>Scheduler</code> 구간을 확대한 그림. <code>schedule()</code>이 한 스텝에서 토큰 예산을 어떻게 나누는지.</p>
+      <ul>
+        <li>RUNNING 큐를 먼저, 남은 예산으로 WAITING 큐</li>
+        <li>블록이 모자랄 때의 선점과 재시도 루프</li>
+        <li>프리픽스 캐시 히트와 청크 프리필 상한</li>
+      </ul>
+    </a>
+
+    <a class="card" href="spec-decode.html">
+      <span class="tag detail">상세</span>
+      <h2>Speculative Decoding 순환</h2>
+      <p>draft가 한 스텝에 만들어져 다음 스텝에 검증되는 순환. 제안기 종류와 무관한 공통 골격.</p>
+      <ul>
+        <li>지난 draft 검증 → 수락 → 다음 draft 제안</li>
+        <li>거부분만큼 num_computed_tokens 롤백</li>
+        <li>num_lookahead_tokens로 KV 자리 선예약</li>
+      </ul>
+    </a>
+
+    <a class="card" href="graph-mode-split.html">
+      <span class="tag detail">상세</span>
+      <h2>그래프 모드가 갈리는 지점</h2>
+      <p>엔진 전반에서 FULL · PIECEWISE · NONE이 어디서 갈라지는지. 설정 → 백엔드 능력 → 배치별 조회의 세 단계.</p>
+      <ul>
+        <li>VLLM_COMPILE이 아니면 PIECEWISE 자체가 불가</li>
+        <li>어텐션 백엔드의 min_cg_support가 상한을 결정</li>
+        <li>같은 설정이어도 배치 모양에 따라 매 스텝 재판정</li>
+      </ul>
+    </a>
+
+    <a class="card" href="model-runner-gate.html">
+      <span class="tag detail">상세</span>
+      <h2>모델 러너 V1/V2 선택</h2>
+      <p>내 설정이면 어느 러너를 쓰는지. <code>use_v2_model_runner</code>의 판정 순서.</p>
+      <ul>
+        <li>기본은 V2, V1은 폴백 경로</li>
+        <li>HiSparse · 워터마킹은 V2 고정</li>
+        <li>플랫폼 요건과 미지원 기능 확인</li>
+      </ul>
+    </a>
+
+    <a class="card" href="cudagraph-dispatch.html">
+      <span class="tag detail">상세</span>
+      <h2>CUDA Graph 디스패치</h2>
+      <p>위 흐름의 <code>GPUModelRunner</code> 구간을 확대한 그림. 그래프를 언제 캡처하고 언제 eager로 떨어지는지.</p>
+      <ul>
+        <li>기동 1회: 컴파일 · 커널 워밍업 · 그래프 캡처</li>
+        <li>스텝마다: FULL → PIECEWISE → NONE 키 조회</li>
+        <li>드래프터 그래프는 target 모드에서 파생 (V1/V2 다름)</li>
+      </ul>
+    </a>
+  </div>
+
+  <section class="section">
+    <h2>V1 / V2 지원 범위</h2>
+    <p>커밋 <code>dc36fcc</code> 기준. <code>config/vllm.py</code>의 서로 다른 두 함수이고, 걸렸을 때 동작도 다릅니다.</p>
+    <div class="grid">
+      <div class="panel">
+        <h3>V2가 아직 못 하는 것 <span class="badge">→ V1로 폴백</span></h3>
+        <ul>
+          <li>stock torch.compile</li>
+          <li>sequence parallelism (TP &gt; 1일 때)</li>
+          <li>pipeline parallelism + external_launcher</li>
+          <li>ngram / ngram_gpu speculative decoding</li>
+          <li>eagle · eagle3 · mtp · dflash · dspark · extract_hidden_states 외의 spec 방식</li>
+          <li>EAGLE parallel drafting</li>
+          <li>microbatching(DBO)과 겹치는 기능</li>
+          <li>elastic expert parallelism</li>
+          <li>custom logits processors</li>
+          <li>mamba cache mode <code>all</code></li>
+        </ul>
+      </div>
+      <div class="panel">
+        <h3>V1이 못 하는 것 <span class="badge err">→ ValueError</span></h3>
+        <ul>
+          <li>prefill context parallel</li>
+          <li>dspark speculative decoding</li>
+          <li>adaptive draft verification</li>
+          <li>mixed sliding/full dflash drafts</li>
+          <li>dflash2 drafts</li>
+          <li>diffusion models</li>
+          <li>batch-sharded sampling</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    근거 코드: <code>vllm/v1/engine/</code>, <code>vllm/v1/core/sched/scheduler.py</code>,
+    <code>vllm/v1/executor/multiproc_executor.py</code>, <code>vllm/v1/worker/gpu_model_runner.py</code>,
+    <code>vllm/v1/cudagraph_dispatcher.py</code>, <code>vllm/v1/spec_decode/</code>,
+    <code>vllm/config/vllm.py</code>,
+    <code>vllm/config/compilation.py</code>, <code>vllm/compilation/backends.py</code>
+  </footer>
+</main>
+</body>
+</html>

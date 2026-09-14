@@ -1,0 +1,35 @@
+{{- $src := .Get "src" -}}
+{{- $title := .Get "title" | default "Diagram" -}}
+{{- $w := int (.Get "w" | default 1200) -}}
+{{- $h := int (.Get "h" | default 650) -}}
+{{- if not (.Page.Scratch.Get "diagram-css") -}}
+{{- .Page.Scratch.Set "diagram-css" true -}}
+<style>
+/* 본문 컬럼(680px)보다 다이어그램이 넓어 뷰포트 폭까지 확장한다. */
+.diagram-embed {
+  width: min(1040px, 94vw);
+  margin: 2rem 0 2rem 50%;
+  transform: translateX(-50%);
+}
+.diagram-embed iframe {
+  display: block;
+  width: 100%;
+  min-height: 380px;
+  border: thin solid currentColor;
+  border-radius: 4px;
+  background: transparent;
+  color-scheme: light dark;
+}
+.diagram-embed figcaption {
+  margin-top: 0.5rem;
+  font-size: 0.85rem;
+  text-align: center;
+  opacity: 0.6;
+}
+</style>
+{{- end }}
+<figure class="diagram-embed">
+  <iframe src="{{ $src }}?embed=1" title="{{ $title }}" loading="lazy"
+          style="aspect-ratio: {{ $w }} / {{ add $h 150 }};"></iframe>
+  <figcaption>{{ $title }} · <a href="{{ $src }}" target="_blank" rel="noopener">전체 화면으로 보기 ↗</a></figcaption>
+</figure>
