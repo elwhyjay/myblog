@@ -4,7 +4,7 @@ date = 2026-09-14T17:00:00+09:00
 draft = true
 toc = true
 tocBorder = true
-tags = ['vLLM', 'Inference', 'LLM Serving', 'CUDA Graph', 'Speculative Decoding', 'MLOps']
+tags = ['vLLM', 'Inference', 'LLM Serving', 'CUDA Graph', 'Speculative Decoding', 'MLOps', 'pinned']
 +++
 
 > **TL;DR**
