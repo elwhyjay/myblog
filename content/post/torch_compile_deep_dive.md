@@ -2,7 +2,7 @@
 title = 'torch.compile 탐구생활'
 date = 2026-04-21T14:00:00+09:00
 draft = false
-tags = ['PyTorch', 'torch.compile', 'TorchDynamo', 'TorchInductor', 'AOTAutograd', 'MLOps', 'Inference']
+tags = ['PyTorch', 'torch.compile', 'TorchDynamo', 'TorchInductor', 'AOTAutograd', 'MLOps', 'Inference','pinned']
 +++
 
 > **TL;DR**
